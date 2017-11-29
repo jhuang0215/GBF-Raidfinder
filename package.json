@@ -1,0 +1,22 @@
+{
+  "name": "gbf-raidfinder",
+  "version": "1.0.0",
+  "description": "Granblue Fantasy Raid Finder",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhuang0215/GBF-Raidfinder.git"
+  },
+  "author": "Jack Huang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jhuang0215/GBF-Raidfinder/issues"
+  },
+  "homepage": "https://github.com/jhuang0215/GBF-Raidfinder#readme",
+  "dependencies": {
+    "twit": "^2.2.9"
+  }
+}
