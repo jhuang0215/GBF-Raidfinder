@@ -1,16 +1,38 @@
 console.log('index.js is starting');
 
-var Twit = require('twit');
-var config = require('./config');
+let Twit = require('twit');
+let twitConfig = require('./config');
+let raidConfig = require('./raids.json');
 
-var T = new Twit(config);
+let keywords = '';
+
+for (let i = 0; i < raidConfig.length; i++) {
+    keywords += raidConfig[i].english + ',' + raidConfig[i].japanese;
+    if (i !== raidConfig.length - 1) {
+        keywords += ',';
+    }
+}
+
+
+
+
+
+let T = new Twit(twitConfig);
 
 // steam a sample of public statuses
-var param = {
-    track: 'Lvl 75 Celeste Omega'
+let param = {
+    track: keywords
 }
-var stream = T.stream('statuses/filter', param);
+let stream = T.stream('statuses/filter', param);
 
 stream.on('tweet', function (tweet) {
-    console.log(tweet)
+    console.log(tweet);
+
 })
+
+/*
+function isValidTweet (data) {
+    let result = false;
+    if()
+}
+*/
