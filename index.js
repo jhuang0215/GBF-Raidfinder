@@ -16,7 +16,18 @@ let server = app.listen(3000, function(){
 var io = socket(server);
 
 io.on('connection', function(socket){
-    console.log('made socket connection');
+    console.log('made socket connection', socket.id);
+
+    // Handle web socket events
+    socket.on('subscribe', function(data){
+        // Add event handler
+        socket.join(data.room);
+    });
+
+    socket.on('unsubscribe', function(data){
+        // Add event handler
+        socket.leave(data.room);
+    });
 });
 
 // twitter api request keyword setup (adding all the raid names into keyword)
@@ -43,6 +54,7 @@ stream.on('tweet', function(tweet){
         console.log('valid');
         let raidInfo = getTweetMessage(tweet);
         console.log(JSON.stringify(raidInfo));
+        io.to(raidInfo.room).emit('tweet', raidInfo);
     }
 
 })
