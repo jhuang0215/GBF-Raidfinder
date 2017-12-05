@@ -19,6 +19,8 @@
   "homepage": "https://github.com/jhuang0215/GBF-Raidfinder#readme",
   "dependencies": {
     "eslint": "^4.12.1",
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4",
     "twit": "^2.2.9"
   }
 }

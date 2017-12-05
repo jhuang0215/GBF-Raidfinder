@@ -1,9 +1,25 @@
 console.log('index.js is starting');
 
-let Twit = require('twit');
-let twitConfig = require('./config');
-let raidConfig = require('./raids.json');
+const Twit = require('twit');
+const twitConfig = require('./config');
+const raidConfig = require('./raids.json');
+const express = require('express');
+const socket = require('socket.io');
 
+// App setup
+let app = express();
+let server = app.listen(3000, function(){
+    console.log('listening request on port 3000');
+});
+
+// Socket setup
+var io = socket(server);
+
+io.on('connection', function(socket){
+    console.log('made socket connection');
+});
+
+// twitter api request keyword setup (adding all the raid names into keyword)
 let keywords = '';
 
 for (let i = 0; i < raidConfig.length; i++) {
@@ -12,10 +28,6 @@ for (let i = 0; i < raidConfig.length; i++) {
         keywords += ',';
     }
 }
-
-
-
-
 
 let T = new Twit(twitConfig);
 
