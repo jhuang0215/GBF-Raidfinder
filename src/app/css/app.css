@@ -1,0 +1,24 @@
+/* app.css  */
+
+html, body, .container {
+    height: auto;
+    width: auto;
+    visibility: visible !important;
+  }
+
+.setting-btn {
+    position: absolute;
+    right: 25px;
+    bottom: 25px;
+    z-index: 100%;
+    background-color: rgb(19, 19, 117);
+    border: none;
+    height: 50px;
+    width: 50px;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 2em;
+    border-radius: 50%;
+  }
