@@ -7,7 +7,7 @@ html, body, .container {
   }
 
 .setting-btn {
-    position: absolute;
+    position: fixed;
     right: 25px;
     bottom: 25px;
     z-index: 100%;
