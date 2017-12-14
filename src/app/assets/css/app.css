@@ -1,0 +1,76 @@
+/* app.css  */
+
+html, body, .container {
+    height: auto;
+    width: auto;
+    visibility: visible !important;
+  }
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 18px;
+  height: 12px;
+  }
+  
+  ::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #ccc;  
+  }
+
+  /* menu button style */
+.setting-btn {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    z-index: 100%;
+    background-color: rgb(19, 19, 117);
+    border: none;
+    height: 50px;
+    width: 50px;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 2em;
+    border-radius: 50%;
+  }
+
+/* overlay & menu */
+.overlay {
+    /* Height & width depends on how you want to reveal the overlay (see JS below) */    
+    height: 100%;
+    width: 100%;
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    background-color: rgb(0,0,0); /* Black fallback color */
+    background-color: rgba(0,0,0, 0.7); /* Black w/opacity */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
+}
+
+  #menu-container {
+    position: relative;
+    background: white;
+    position: fixed;
+    left: 30%;
+    top: 10%;
+    max-width: 80%;
+    width: 400px;
+    height: 80%;
+  }
+
+  .menu-list {
+    position: absolute;
+    overflow-y: scroll;
+    max-height: 100%;
+    width: 85%;
+    height: 80%;
+     
+  }

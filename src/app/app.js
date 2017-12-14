@@ -1,7 +1,7 @@
 const React = require('react');
 const ReactDOM = require('react-DOM');
 
-require('./css/app.css');
+require('./assets/css/app.css');
 const raidConfig = require('./../../raids.json');
 
 // Creat component 
@@ -9,14 +9,14 @@ class RaidFinderComponenet extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            openSetting: false,
-            raidLists: ['hello', 'world']
+            openMenu: false,
+            raidCards: []
         };
     }
 
     render() {
-        let raidLists = this.state.raidLists;
-        raidLists = raidLists.map(function(item, index){
+        let raidCards = this.state.raidCards;
+        raidCards = raidCards.map(function(item, index){
             return (
                 <li key={index}>{item}</li>
             );
@@ -24,37 +24,51 @@ class RaidFinderComponenet extends React.Component {
 
         return (
             <div className="container">            
-               {this.state.openSetting ? <RaidFilter /> : null}
-               <ul>{raidLists}</ul>               
-               <SettingButton onClick={this.btnClicked.bind(this)} />
-               <RaidFilteredList />
+               {this.state.openMenu ? <RaidMenu onDelete={this.menuToggle.bind(this)} /> : null}
+               <ul>{raidCards}</ul>               
+               <SettingButton onClick={this.menuToggle.bind(this)} />               
             </div>
         );
     }//render
 
     // Custom functions
-    btnClicked() {
-        alert("clicked");
+    menuToggle() {        
         console.log("clicked");
         this.setState({
-            openSetting: true
+            openMenu: !this.state.openMenu
+        });
+    }
+
+    addRaidCard(raidData) {
+        let cards = this.state.raidCards;
+
+        for(let i = 0; i < cards.length; i++) {
+            if(raidData === cards[i]){
+                return null;
+            }
+        }
+        // append new card
+        cards.push(raidData);
+        this.setState({
+            raidCards: cards
         });
     }
 }
 
-class RaidList extends React.Component {
+class RaidFilteredList extends React.Component {
     render() {
         return (
-            <ul>
+            <ul className="menu-list">
                 {this.props.items.map(function(item, index){                
                     return <li className="list-group-item" key={index}>{item.english}</li>
                 })}
-            </ul>
+                {this.props.items.length === 0 ? <li><strong>No Result</strong><br/>Your search returned no results</li> : null}
+            </ul>            
         );
     }//render
 }
 
-class RaidFilteredList extends React.Component {
+class RaidMenu extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -67,12 +81,16 @@ class RaidFilteredList extends React.Component {
     }
     render() {
         return (
-            <div className="setting-container">
-                <div className="filter-list">
-                    <input type="text" placeholder="Search" onChange={this.filterList.bind(this)} />
-                    <RaidList items={this.state.items} />
-                </div>            
+            <div className="overlay">
+                <div id="menu-container">
+                    <a href="javascript:void(0)" className="closeBtn" onClick={this.props.onDelete}>&times;</a>
+                    <div className="filter-list">
+                        <input type="text" placeholder="Search" onChange={this.filterList.bind(this)} />
+                        <RaidFilteredList items={this.state.items} />
+                    </div>            
+                </div>
             </div>
+
         );
     }//render
 
