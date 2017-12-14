@@ -24,8 +24,13 @@ class RaidFinderComponenet extends React.Component {
 
         return (
             <div className="container">            
-               {this.state.openMenu ? <RaidMenu onDelete={this.menuToggle.bind(this)} /> : null}
-               <ul>{raidCards}</ul>               
+               {this.state.openMenu ? <RaidMenu onDelete={this.menuToggle.bind(this)} onAdd={this.addRaidCard.bind(this)} /> : null}
+               <ul>
+                   {/* Make each list a card!!!!!!!!!!!!!!!!!! */}
+                    {this.state.raidCards.map((item, index)=>{
+                        return <li key={index}>{item.english}  </li>
+                    })}
+               </ul>
                <SettingButton onClick={this.menuToggle.bind(this)} />               
             </div>
         );
@@ -55,17 +60,33 @@ class RaidFinderComponenet extends React.Component {
     }
 }
 
+class RaidListItem extends React.Component {
+    render() {
+        return (
+            <li className="list-group-item" onClick={()=>{this.props.onAdd(this.props.raidData)}}>
+                {this.props.raidData.english}  
+            </li>
+        );
+    }//render
+
+    // custom function
+
+}
+
 class RaidFilteredList extends React.Component {
     render() {
         return (
             <ul className="menu-list">
                 {this.props.items.map(function(item, index){                
-                    return <li className="list-group-item" key={index}>{item.english}</li>
-                })}
+                    //return <li className="list-group-item" key={index}>{item.english}  </li>
+                    return <RaidListItem key={index} raidData={item} onAdd={this.props.onAdd} />
+                }, this)}
                 {this.props.items.length === 0 ? <li><strong>No Result</strong><br/>Your search returned no results</li> : null}
             </ul>            
         );
     }//render
+    
+    
 }
 
 class RaidMenu extends React.Component {
@@ -86,7 +107,7 @@ class RaidMenu extends React.Component {
                     <a href="javascript:void(0)" className="closeBtn" onClick={this.props.onDelete}>&times;</a>
                     <div className="filter-list">
                         <input type="text" placeholder="Search" onChange={this.filterList.bind(this)} />
-                        <RaidFilteredList items={this.state.items} />
+                        <RaidFilteredList items={this.state.items} onAdd={this.props.onAdd} />
                     </div>            
                 </div>
             </div>
