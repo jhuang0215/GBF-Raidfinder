@@ -23,15 +23,16 @@ class RaidFinderComponenet extends React.Component {
         });// to be continued check out nest componenet
 
         return (
-            <div className="container">            
-               {this.state.openMenu ? <RaidMenu onDelete={this.menuToggle.bind(this)} onAdd={this.addRaidCard.bind(this)} /> : null}
-               <ul>
-                   {/* Make each list a card!!!!!!!!!!!!!!!!!! */}
+            <div className="main-container">
+                <SettingButton onClick={this.menuToggle.bind(this)} />
+                {this.state.openMenu ? <RaidMenu onDelete={this.menuToggle.bind(this)} onAdd={this.addRaidCard.bind(this)} /> : null}
+
+                <div className="gbfrf-columns">
                     {this.state.raidCards.map((item, index)=>{
-                        return <li key={index}>{item.english}  </li>
+                        //return <div className="gbfrf-column" key={index}>{item.english}  </div>
+                        return <RaidCard key={index} raid={item}/>
                     })}
-               </ul>
-               <SettingButton onClick={this.menuToggle.bind(this)} />               
+                </div>             
             </div>
         );
     }//render
@@ -58,6 +59,22 @@ class RaidFinderComponenet extends React.Component {
             raidCards: cards
         });
     }
+}
+
+class RaidCard extends React.Component {
+    render() {
+        return (
+            <div className="gbfrf-column">
+                <div className="raid-image">
+                    <img src={this.props.raid.image}/>
+                </div>
+                <div className="raid-content">
+                    <div className="en-title">{this.props.raid.english}</div>
+                    <div className="jp-title">{this.props.raid.japanese}</div>
+                </div>                
+            </div>
+        );
+    }//render
 }
 
 class RaidListItem extends React.Component {

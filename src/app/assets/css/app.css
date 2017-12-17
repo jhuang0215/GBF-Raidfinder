@@ -1,10 +1,67 @@
 /* app.css  */
 
-html, body, .container {
-    height: auto;
+html, body, .main-container {
+    height: 100%;
     width: auto;
     visibility: visible !important;
   }
+
+.gbfrf-columns {
+  height: 100%;
+  overflow-x: scroll;
+  width: auto;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.gbfrf-column {
+  width: 350px;
+  height: 100%;
+  flex: 0 0 auto;
+}
+
+.gbfrf-column>.raid-image {
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  padding: 0;
+  background: rgba(0,0,0, 0.05);
+}
+
+.gbfrf-column>.raid-image>img {
+  object-fit: cover;
+  object-position: 0% 20%;
+  width: 100%;
+  height: 80px;
+}
+
+.gbfrf-column>.raid-content {
+  text-align: center;
+  border: none;
+  border-top: 1px solid rgba(34,36,38,.1);
+  background: 0 0;
+  margin: 0;
+  padding: 1em 1em;
+  box-shadow: none;
+  font-size: 1em;
+  border-radius: 0;
+}
+.gbfrf-column>.raid-content>.en-title {
+  display: block;
+  font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+  color: rgba(0,0,0,.85);
+  font-weight: 700;
+  font-size: 1.28571429em;
+  margin-top: -.21425em;
+  line-height: 1.28571429em;
+}
+
+.gbfrf-column>.raid-content>.jp-title {
+  font-size: 1em;
+  color: rgba(0,0,0, 0.4);
+}
 
 /* Scrollbar styles */
 ::-webkit-scrollbar {
