@@ -30,7 +30,7 @@ class RaidFinderComponenet extends React.Component {
                 <div className="gbfrf-columns">
                     {this.state.raidCards.map((item, index)=>{
                         //return <div className="gbfrf-column" key={index}>{item.english}  </div>
-                        return <RaidCard key={index} raid={item}/>
+                        return <RaidCard key={index} raid={item} handleDelete={this.deleteRaidCard.bind(this)} />
                     })}
                 </div>             
             </div>
@@ -59,6 +59,19 @@ class RaidFinderComponenet extends React.Component {
             raidCards: cards
         });
     }
+
+    deleteRaidCard(raidData){
+        let cards = this.state.raidCards;
+        let index = cards.indexOf(raidData);
+
+        if(index > -1) {
+            cards.splice(index, 1);
+        }
+
+        this.setState({
+            raidCards: cards
+        });
+    }
 }
 
 class RaidCard extends React.Component {
@@ -82,7 +95,7 @@ class RaidCard extends React.Component {
                         </button>
                     </div>                    
                     <div className="gbfrf-remove">
-                        <button className="btn-remove button">
+                        <button className="btn-remove button" onClick={this.deleteRaidCard.bind(this)}>
                             Remove Raid
                         </button>                        
                     </div>
@@ -90,6 +103,11 @@ class RaidCard extends React.Component {
             </div>
         );
     }//render
+
+    // custon functions
+    deleteRaidCard() {
+        this.props.handleDelete(this.props.raid);
+    }
 }
 
 class RaidListItem extends React.Component {
