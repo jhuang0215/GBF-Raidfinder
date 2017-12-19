@@ -1,8 +1,8 @@
 const React = require('react');
 const ReactDOM = require('react-DOM');
 
-require('./assets/css/app.css');
 const raidConfig = require('./../../raids.json');
+require('./assets/css/app.css');
 
 // Creat component 
 class RaidFinderComponenet extends React.Component {
@@ -71,7 +71,22 @@ class RaidCard extends React.Component {
                 <div className="raid-content">
                     <div className="en-title">{this.props.raid.english}</div>
                     <div className="jp-title">{this.props.raid.japanese}</div>
-                </div>                
+                </div>
+                <div className="raid-buttons">
+                    <div className="gbfrf-notification">
+                        <button className="notification-setting">
+                            <img src='/app/assets/svg/two-cogwheels-configuration-interface-symbol.svg' className="svg-cog"/>
+                        </button>
+                        <button className="notification button left">                    
+                            Notification
+                        </button>
+                    </div>                    
+                    <div className="gbfrf-remove">
+                        <button className="btn-remove button">
+                            Remove Raid
+                        </button>                        
+                    </div>
+                </div>            
             </div>
         );
     }//render
