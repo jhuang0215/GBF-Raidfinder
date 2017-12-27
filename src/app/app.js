@@ -4,6 +4,8 @@ const ReactDOM = require('react-DOM');
 const raidConfig = require('./../../raids.json');
 require('./assets/css/app.css');
 
+import {subscribeToRaid} from './api'; // for RaidTable component
+
 // Creat component 
 class RaidFinderComponenet extends React.Component {
     constructor(props) {
@@ -30,7 +32,7 @@ class RaidFinderComponenet extends React.Component {
                 <div className="gbfrf-columns">
                     {this.state.raidCards.map((item, index)=>{
                         //return <div className="gbfrf-column" key={index}>{item.english}  </div>
-                        return <RaidCard key={index} raid={item} handleDelete={this.deleteRaidCard.bind(this)} />
+                        return <RaidCard key={item.room} raid={item} handleDelete={this.deleteRaidCard.bind(this)} />
                     })}
                 </div>             
             </div>
@@ -74,6 +76,48 @@ class RaidFinderComponenet extends React.Component {
     }
 }
 
+class RaidTable extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            raidTweets: []
+        };
+        console.log(props.raid);
+        subscribeToRaid(this.props.raid.room, (err, raidInfo)=>{
+            let tweets = this.state.raidTweets;            
+            tweets.push(raidInfo);
+            this.setState({
+                raidTweets: tweets
+            });
+        });
+    }
+
+    render() {
+        return(
+            <table>
+                <thead>
+                    <tr>
+                        <th>Raid ID</th>
+                        <th>Raid Message</th>
+                        <th>Time Tweeted</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {this.state.raidTweets.map((raidTweet, index)=>{
+                        return(
+                            <tr key={index}>
+                                <td>{raidTweet.raidID}</td>
+                                <td>{raidTweet.message}</td>
+                                <td>{raidTweet.time}</td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </table>
+        );
+    }
+}
+
 class RaidCard extends React.Component {
     render() {
         return (
@@ -99,6 +143,9 @@ class RaidCard extends React.Component {
                             Remove Raid
                         </button>                        
                     </div>
+                </div>
+                <div className="raid-table">  
+                    <RaidTable raid={this.props.raid} />
                 </div>            
             </div>
         );

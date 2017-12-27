@@ -13,7 +13,7 @@ let server = app.listen(3000, function(){
 });
 
 // Socket setup
-var io = socket(server);
+const io = socket(server);
 
 io.on('connection', function(socket){
     console.log('made socket connection', socket.id);
