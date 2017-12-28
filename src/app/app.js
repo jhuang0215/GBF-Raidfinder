@@ -4,7 +4,9 @@ const ReactDOM = require('react-DOM');
 const raidConfig = require('./../../raids.json');
 require('./assets/css/app.css');
 
-import {subscribeToRaid} from './api'; // for RaidTable component
+// for RaidTable component
+import {subscribeToRaid} from './api'; 
+import {unsubscribeToRaid} from './api'
 
 // Creat component 
 class RaidFinderComponenet extends React.Component {
@@ -82,13 +84,15 @@ class RaidTable extends React.Component {
         this.state = {
             raidTweets: []
         };
-        console.log(props.raid);
-        subscribeToRaid(this.props.raid.room, (err, raidInfo)=>{
-            let tweets = this.state.raidTweets;            
-            tweets.push(raidInfo);
-            this.setState({
-                raidTweets: tweets
-            });
+        console.log(this.props.raid);
+        subscribeToRaid(this.props.raid, (err, raidInfo)=>{
+            if(this.props.raid.room === raidInfo.room) {
+                let tweets = this.state.raidTweets;
+                tweets.push(raidInfo);
+                this.setState({
+                    raidTweets: tweets
+                });
+            }
         });
     }
 
@@ -108,7 +112,7 @@ class RaidTable extends React.Component {
                             <tr key={index}>
                                 <td>{raidTweet.raidID}</td>
                                 <td>{raidTweet.message}</td>
-                                <td>{raidTweet.time}</td>
+                                <td>{raidTweet.room}</td>
                             </tr>
                         );
                     })}
@@ -153,6 +157,7 @@ class RaidCard extends React.Component {
 
     // custon functions
     deleteRaidCard() {
+        //unsubscribeToRaid(this.props.raid);
         this.props.handleDelete(this.props.raid);
     }
 }

@@ -21,12 +21,15 @@ io.on('connection', function(socket){
     // Handle web socket events
     socket.on('subscribe', function(data){
         // Add event handler
-        socket.join(data.room);
+        console.log(JSON.stringify(data));
+        console.log(JSON.stringify(data.raid.room));
+        socket.join(data.raid.room);
     });
 
     socket.on('unsubscribe', function(data){
         // Add event handler
-        socket.leave(data.room);
+        console.log(JSON.stringify(data.raid.room));
+        socket.leave(data.raid.room);
     });
 });
 
@@ -49,11 +52,11 @@ let param = {
 let stream = T.stream('statuses/filter', param);
 
 stream.on('tweet', function(tweet){
-    console.log(tweet);
+    //console.log(tweet);
     if (isValidTweet(tweet)){
-        console.log('valid');
+        //console.log('valid');
         let raidInfo = getTweetMessage(tweet);
-        console.log(JSON.stringify(raidInfo));
+        console.log(JSON.stringify(raidInfo.room));
         io.to(raidInfo.room).emit('tweet', raidInfo);
     }
 
@@ -79,7 +82,7 @@ function getTweetMessage(tweet) {
         raidID: "",
         user: "@" + tweet.user.screen_name,            
         time: tweet.created_at,
-        raidType: searchTextForRaids(tweet.text),
+        room: searchTextForRaids(tweet.text),
         message: "No Twitter Message",
         language: "ja",
         status: "unclicked"
