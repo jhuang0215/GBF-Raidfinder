@@ -7,8 +7,9 @@ function subscribeToRaid (raid, cb) {
     
 }
 
-function unsubscribeToRaid (raid) {
+function unsubscribeToRaid (raid, cb) {
     socket.emit('unsubscribe', {raid});
+    socket.off('tweet', cb);
 }
 
-export {subscribeToRaid, unsubscribeToRaid}
+export default {subscribeToRaid, unsubscribeToRaid}

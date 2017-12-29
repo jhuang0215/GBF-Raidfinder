@@ -52,7 +52,7 @@ let param = {
 let stream = T.stream('statuses/filter', param);
 
 stream.on('tweet', function(tweet){
-    //console.log(tweet);
+    console.log(tweet);
     if (isValidTweet(tweet)){
         //console.log('valid');
         let raidInfo = getTweetMessage(tweet);

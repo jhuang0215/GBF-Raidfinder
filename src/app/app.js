@@ -5,8 +5,11 @@ const raidConfig = require('./../../raids.json');
 require('./assets/css/app.css');
 
 // for RaidTable component
-import {subscribeToRaid} from './api'; 
-import {unsubscribeToRaid} from './api'
+//import {subscribeToRaid} from './api'; 
+//import {unsubscribeToRaid} from './api';
+//import socketApi from './api';
+import io from 'socket.io-client';
+const socket = io('http://localhost:3000');
 
 // Creat component 
 class RaidFinderComponenet extends React.Component {
@@ -84,16 +87,15 @@ class RaidTable extends React.Component {
         this.state = {
             raidTweets: []
         };
+    }
+
+    componentDidMount() {
         console.log(this.props.raid);
-        subscribeToRaid(this.props.raid, (err, raidInfo)=>{
-            if(this.props.raid.room === raidInfo.room) {
-                let tweets = this.state.raidTweets;
-                tweets.push(raidInfo);
-                this.setState({
-                    raidTweets: tweets
-                });
-            }
-        });
+        socketApi.subscribeToRaid(this.props.raid, this.socketCallBack.bind(this));
+    }
+
+    componentWillUnmount() {        
+        socketApi.unsubscribeToRaid(this.props.raid, this.socketCallBack.bind(this));
     }
 
     render() {
@@ -119,6 +121,18 @@ class RaidTable extends React.Component {
                 </tbody>
             </table>
         );
+    } //render
+
+    // custom fcuntions
+    socketCallBack(err, raidInfo) {      
+        console.log(this.props.raid.room);
+        if(this.props.raid.room === raidInfo.room) {
+            let tweets = this.state.raidTweets;
+            tweets.push(raidInfo);
+            this.setState({
+                raidTweets: tweets
+            });
+        }        
     }
 }
 
@@ -156,8 +170,7 @@ class RaidCard extends React.Component {
     }//render
 
     // custon functions
-    deleteRaidCard() {
-        //unsubscribeToRaid(this.props.raid);
+    deleteRaidCard() {        
         this.props.handleDelete(this.props.raid);
     }
 }
