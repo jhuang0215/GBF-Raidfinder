@@ -17,18 +17,28 @@ class RaidFinderComponenet extends React.Component {
         super(props);
         this.state = {
             openMenu: false,
-            raidCards: []
+            // raidCards : [{raid: raidData, raidTweets: []}]
+            raidCards: []            
         };
     }
 
-    render() {
-        let raidCards = this.state.raidCards;
-        raidCards = raidCards.map(function(item, index){
-            return (
-                <li key={index}>{item}</li>
-            );
-        });// to be continued check out nest componenet
+    componentDidMount() {                
+        socket.on('tweet', function(raidInfo) {            
+            let raids = this.state.raidCards;
+            
+            for(let i = 0; i < raids.length; i++){
+                if(raids[i].raid.room === raidInfo.room){                    
+                    raids[i].raidTweets.push(raidInfo);  
+                    
+                    this.setState({
+                        raidCards: raids
+                    });
+                }
+            }
+        }.bind(this));
+    }
 
+    render() {
         return (
             <div className="main-container">
                 <SettingButton onClick={this.menuToggle.bind(this)} />
@@ -37,7 +47,11 @@ class RaidFinderComponenet extends React.Component {
                 <div className="gbfrf-columns">
                     {this.state.raidCards.map((item, index)=>{
                         //return <div className="gbfrf-column" key={index}>{item.english}  </div>
-                        return <RaidCard key={item.room} raid={item} handleDelete={this.deleteRaidCard.bind(this)} />
+                        return <RaidCard key={item.raid.room} 
+                            raid={item.raid} 
+                            raidTweets={item.raidTweets} 
+                            socket={socket} 
+                            handleDelete={this.deleteRaidCard.bind(this)} />
                     })}
                 </div>             
             </div>
@@ -53,26 +67,29 @@ class RaidFinderComponenet extends React.Component {
     }
 
     addRaidCard(raidData) {
-        let cards = this.state.raidCards;
+        let raids = this.state.raidCards;
 
-        for(let i = 0; i < cards.length; i++) {
-            if(raidData === cards[i]){
+        for(let i = 0; i < raids.length; i++) {
+            if(raidData === raids[i].raid){
                 return null;
             }
         }
+        let newCard = {raid: raidData, raidTweets: []};
         // append new card
-        cards.push(raidData);
+        raids.push(newCard);
         this.setState({
-            raidCards: cards
+            raidCards: raids
         });
     }
 
     deleteRaidCard(raidData){
         let cards = this.state.raidCards;
-        let index = cards.indexOf(raidData);
 
-        if(index > -1) {
-            cards.splice(index, 1);
+        for(let i = 0; i < cards.length; i++){
+            if(raidData === cards[i].raid){                
+                cards.splice(i, 1);
+                break;
+            }
         }
 
         this.setState({
@@ -81,62 +98,17 @@ class RaidFinderComponenet extends React.Component {
     }
 }
 
-class RaidTable extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            raidTweets: []
-        };
-    }
-
+class RaidCard extends React.Component {
     componentDidMount() {
         console.log(this.props.raid);
-        socketApi.subscribeToRaid(this.props.raid, this.socketCallBack.bind(this));
+        this.props.socket.emit('subscribe', this.props.raid);
     }
 
-    componentWillUnmount() {        
-        socketApi.unsubscribeToRaid(this.props.raid, this.socketCallBack.bind(this));
+    componentWillUnmount() {
+        console.log(this.props.raid);
+        this.props.socket.emit('unsubscribe', this.props.raid);
     }
 
-    render() {
-        return(
-            <table>
-                <thead>
-                    <tr>
-                        <th>Raid ID</th>
-                        <th>Raid Message</th>
-                        <th>Time Tweeted</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.state.raidTweets.map((raidTweet, index)=>{
-                        return(
-                            <tr key={index}>
-                                <td>{raidTweet.raidID}</td>
-                                <td>{raidTweet.message}</td>
-                                <td>{raidTweet.room}</td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-        );
-    } //render
-
-    // custom fcuntions
-    socketCallBack(err, raidInfo) {      
-        console.log(this.props.raid.room);
-        if(this.props.raid.room === raidInfo.room) {
-            let tweets = this.state.raidTweets;
-            tweets.push(raidInfo);
-            this.setState({
-                raidTweets: tweets
-            });
-        }        
-    }
-}
-
-class RaidCard extends React.Component {
     render() {
         return (
             <div className="gbfrf-column">
@@ -163,7 +135,26 @@ class RaidCard extends React.Component {
                     </div>
                 </div>
                 <div className="raid-table">  
-                    <RaidTable raid={this.props.raid} />
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Raid ID</th>
+                                <th>Raid Message</th>
+                                <th>Time Tweeted</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.props.raidTweets.map((raidTweet, index)=>{
+                                return(
+                                    <tr key={index}>
+                                        <td>{raidTweet.raidID}</td>
+                                        <td>{raidTweet.message}</td>
+                                        <td>{raidTweet.room}</td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
                 </div>            
             </div>
         );
@@ -172,6 +163,7 @@ class RaidCard extends React.Component {
     // custon functions
     deleteRaidCard() {        
         this.props.handleDelete(this.props.raid);
+        //this.props.socket.emit('unsubscribe', {this.props.raidCard.raid});
     }
 }
 

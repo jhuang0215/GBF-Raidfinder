@@ -22,14 +22,14 @@ io.on('connection', function(socket){
     socket.on('subscribe', function(data){
         // Add event handler
         console.log(JSON.stringify(data));
-        console.log(JSON.stringify(data.raid.room));
-        socket.join(data.raid.room);
+        console.log(JSON.stringify(data.room));
+        socket.join(data.room);
     });
 
     socket.on('unsubscribe', function(data){
         // Add event handler
-        console.log(JSON.stringify(data.raid.room));
-        socket.leave(data.raid.room);
+        console.log(JSON.stringify(data.room));
+        socket.leave(data.room);
     });
 });
 
