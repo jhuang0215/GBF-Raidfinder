@@ -1,5 +1,7 @@
 const React = require('react');
 
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+
 class RaidCard extends React.Component {
     componentDidMount() {
         console.log(this.props.raid);
@@ -48,11 +50,15 @@ class RaidCard extends React.Component {
                         <tbody>
                             {this.props.raidTweets.map((raidTweet, index)=>{
                                 return(
-                                    <tr key={index} onClick={this.handleRaidClick}>
+                                    <CopyToClipboard key={index}
+                                    text={raidTweet.raidID}
+                                    onCopy={this.handleRaidClick}> 
+                                        <tr>
                                         <td>{raidTweet.raidID}</td>
                                         <td>{raidTweet.message}</td>
                                         <td>{raidTweet.room}</td>
-                                    </tr>
+                                        </tr>
+                                    </CopyToClipboard>
                                 );
                             })}
                         </tbody>
