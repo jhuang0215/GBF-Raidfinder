@@ -83,7 +83,7 @@ function getTweetMessage(tweet) {
         user: "@" + tweet.user.screen_name,            
         time: tweet.created_at,
         room: searchTextForRaids(tweet.text),
-        message: "No Twitter Message",
+        message: "No Message",
         language: "ja",
         status: "unclicked"
     };

@@ -4,6 +4,7 @@ const ReactDOM = require('react-DOM');
 const raidConfig = require('./../../raids.json');
 require('./assets/css/app.css');
 
+import copyToClipboard from 'copy-to-clipboard';
 import io from 'socket.io-client';
 const socket = io('http://localhost:3000');
 
@@ -40,6 +41,8 @@ class RaidFinderComponenet extends React.Component {
                     });
                 }
             }
+
+            this.sendDesktopNotification(raidInfo);
         }.bind(this));
     }
 
@@ -64,6 +67,48 @@ class RaidFinderComponenet extends React.Component {
     }//render
 
     // Custom functions
+    sendDesktopNotification(data) {
+        console.log("Sending desktop notification for: " + data.room);
+
+        let ask = Notification.requestPermission();
+
+        if(Notification.permission === "granted"){            
+            try {
+                let raid = null;
+                let title = "";
+
+                for(let i = 0; i < raidConfig.length; i++){
+                    if(raidConfig[i].room === data.room){
+                        raid = raidConfig[i];
+                        break;
+                    }
+                }
+
+                if(data.language === "en"){
+                    title = raid.english;
+                } else {
+                    title = raid.japanese;
+                }
+
+                let notification = new Notification(title, {
+                    body: "ID: " + data.raidID + "\nTweeter: " + data.user + "\nMessage: " + data.message,
+                    icon: raid.image,
+                    tag: raid.room
+                });
+
+                notification.onclick = function() {
+                    copyToClipboard(data.raidID);
+                }
+
+                setTimeout(function(){
+                    notification.close();
+                },5000);
+            } catch(error) {
+                console.log("Error sending desktop notification: " + error);
+            }
+        }
+    }
+
     menuToggle() {        
         console.log("clicked");
         this.setState({
