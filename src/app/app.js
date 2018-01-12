@@ -2,6 +2,7 @@ const React = require('react');
 const ReactDOM = require('react-DOM');
 
 const raidConfig = require('./../../raids.json');
+// const viramateAPI = "chrome-extension://fgpokpknehglcioijejfeebigdnbnokj/content/api.html";
 require('./assets/css/app.css');
 
 import copyToClipboard from 'copy-to-clipboard';
@@ -49,6 +50,10 @@ class RaidFinderComponenet extends React.Component {
     render() {
         return (
             <div className="main-container">
+                <iframe ref={(f) => {this.ifr = f}} src="chrome-extension://fgpokpknehglcioijejfeebigdnbnokj/content/api.html" style={{display: 'none'}}>
+                    <p>Your browser does not support iframes.</p>
+                </iframe>
+
                 <SettingButton onClick={this.menuToggle.bind(this)} />
                 {this.state.openMenu ? <RaidMenu onDelete={this.menuToggle.bind(this)} onAdd={this.addRaidCard.bind(this)} /> : null}
 
@@ -98,14 +103,41 @@ class RaidFinderComponenet extends React.Component {
 
                 notification.onclick = function() {
                     copyToClipboard(data.raidID);
-                }
+
+                    console.log("Trying to send viramate message");
+                    try {
+                        this.ifr.contentWindow.postMessage({
+                            type: "tryJoinRaid",
+                            id: data.raidID,
+                            raidCode: data.raidID
+                        }, "*");
+                    } catch(error) {
+                        console.log("Error sending message to Viramate: " + error);
+                    }
+
+                    // this.sendJoinCommand(data.raidID);
+                }.bind(this);
 
                 setTimeout(function(){
                     notification.close();
                 },5000);
+
             } catch(error) {
                 console.log("Error sending desktop notification: " + error);
             }
+        }
+    }
+    
+    sendJoinCommand(id) {
+        console.log("Trying to send viramate message");
+        try {
+            viramateAPI.postMessage({
+                type: "tryJoinRaid",
+                id: id,
+                raidCode: id
+            }, "*");
+        } catch(error) {
+            console.log("Error sending message to Viramate: " + error);
         }
     }
 
