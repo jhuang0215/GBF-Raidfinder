@@ -20,7 +20,7 @@ class RaidFinderComponenet extends React.Component {
         super(props);
         this.state = {
             openMenu: false,
-            // raidCards : [{raid: raidData, raidTweets: []}]
+            // raidCards : [{raid: raidData, raidTweets: [], notificationSetting: {notificationOn: true, desktopNotification: true, soundNotification: false}}]
             raidCards: []            
         };
     }
@@ -58,11 +58,12 @@ class RaidFinderComponenet extends React.Component {
                 {this.state.openMenu ? <RaidMenu onDelete={this.menuToggle.bind(this)} onAdd={this.addRaidCard.bind(this)} /> : null}
 
                 <div className="gbfrf-columns">
-                    {this.state.raidCards.map((item, index)=>{
-                        //return <div className="gbfrf-column" key={index}>{item.english}  </div>
-                        return <RaidCard key={item.raid.room} 
-                            raid={item.raid} 
-                            raidTweets={item.raidTweets} 
+                    {this.state.raidCards.map((raidCard, index)=>{
+                        //return <div className="gbfrf-column" key={index}>{raidCard.english}  </div>
+                        return <RaidCard key={raidCard.raid.room} 
+                            raid={raidCard.raid} 
+                            raidTweets={raidCard.raidTweets} 
+                            notificationSetting={raidCard.notificationSetting}
                             socket={socket} 
                             handleDelete={this.deleteRaidCard.bind(this)} />
                     })}
@@ -104,18 +105,18 @@ class RaidFinderComponenet extends React.Component {
                 notification.onclick = function() {
                     copyToClipboard(data.raidID);
 
-                    console.log("Trying to send viramate message");
-                    try {
-                        this.ifr.contentWindow.postMessage({
-                            type: "tryJoinRaid",
-                            id: data.raidID,
-                            raidCode: data.raidID
-                        }, "*");
-                    } catch(error) {
-                        console.log("Error sending message to Viramate: " + error);
-                    }
+                    // console.log("Trying to send viramate message");
+                    // try {
+                    //     this.ifr.contentWindow.postMessage({
+                    //         type: "tryJoinRaid",
+                    //         id: data.raidID,
+                    //         raidCode: data.raidID
+                    //     }, "*");
+                    // } catch(error) {
+                    //     console.log("Error sending message to Viramate: " + error);
+                    // }
 
-                    // this.sendJoinCommand(data.raidID);
+                    this.sendJoinCommand(data.raidID);
                 }.bind(this);
 
                 setTimeout(function(){
@@ -129,9 +130,20 @@ class RaidFinderComponenet extends React.Component {
     }
     
     sendJoinCommand(id) {
+        // console.log("Trying to send viramate message");
+        // try {
+        //     viramateAPI.postMessage({
+        //         type: "tryJoinRaid",
+        //         id: id,
+        //         raidCode: id
+        //     }, "*");
+        // } catch(error) {
+        //     console.log("Error sending message to Viramate: " + error);
+        // }
+
         console.log("Trying to send viramate message");
         try {
-            viramateAPI.postMessage({
+            this.ifr.contentWindow.postMessage({
                 type: "tryJoinRaid",
                 id: id,
                 raidCode: id
@@ -148,6 +160,13 @@ class RaidFinderComponenet extends React.Component {
         });
     }
 
+//  PARAM: raidData in form of
+//  {
+// 	    "japanese": "Lv100 プロトバハムート",
+// 	    "english": "Lvl 100 Proto Bahamut",
+// 	    "room": "lvl100protobahamut",
+// 	    "image": "/app/assets/raids/Wings_of_Terror_Nightmare.jpg"
+//  }
     addRaidCard(raidData) {
         let raids = this.state.raidCards;
 
@@ -156,7 +175,8 @@ class RaidFinderComponenet extends React.Component {
                 return null;
             }
         }
-        let newCard = {raid: raidData, raidTweets: []};
+        let newCard = {raid: raidData, raidTweets: [], 
+            notificationSetting: {notificationOn: true, desktopNotification: true, soundNotification: false}};
         // append new card
         raids.push(newCard);
         this.setState({
@@ -170,6 +190,31 @@ class RaidFinderComponenet extends React.Component {
         for(let i = 0; i < cards.length; i++){
             if(raidData === cards[i].raid){                
                 cards.splice(i, 1);
+                break;
+            }
+        }
+
+        this.setState({
+            raidCards: cards
+        });
+    }
+
+// PARAM: input in form of
+// {raid: raidData, setting: "notificationOn" or "desktopNotification" or "soundNotification"}
+    notificationSettingToggle(data){        
+        let cards = this.state.raidCards;
+
+        for(let i = 0; i < cards.length; i++){
+            if(data.raid.english === cards[i].raid.english){
+                if(data.setting === "notificationOn"){
+                    cards[i].notificationSetting.notificationOn === !cards[i].notificationSetting.notificationOn;
+                } else if (data.setting === "desktopNotification"){
+                    cards[i].notificationSetting.desktopNotification === !cards[i].notificationSetting.desktopNotification;
+                } else if (data.setting === "soundNotification"){
+                    cards[i].notificationSetting.soundNotification === !cards[i].notificationSetting.desktopNotification;
+                } else {
+                    console.log("Error changing notification settings");
+                }
                 break;
             }
         }
